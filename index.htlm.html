@@ -1,0 +1,515 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>Registro de Viajeros — Club Del Mar</title>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --azul:#1B3F6E;
+  --azul-med:#2563A8;
+  --azul-claro:#EFF6FF;
+  --azul-brd:#BFDBFE;
+  --gris-bg:#F1F5F9;
+  --gris-brd:#CBD5E1;
+  --gris-txt:#64748B;
+  --negro:#0F172A;
+  --verde:#059669;
+  --rojo:#DC2626;
+  --ambar-bg:#FFFBEB;
+  --ambar-brd:#FDE68A;
+  --radio:8px;
+}
+html{font-size:15px;-webkit-text-size-adjust:100%}
+body{font-family:'Segoe UI',system-ui,-apple-system,sans-serif;background:var(--gris-bg);color:var(--negro);padding:0 0 3rem}
+
+header{background:var(--azul);color:#fff;padding:1.1rem 1rem 1rem;border-bottom:3px solid #0F2A4A}
+header h1{font-size:1rem;font-weight:700;letter-spacing:.01em}
+header p{font-size:.68rem;color:#93C5FD;margin-top:.25rem;line-height:1.4}
+
+.aviso-prop{background:#0F2A4A;color:#93C5FD;padding:.55rem 1rem;font-size:.68rem;text-align:center;border-bottom:1px solid #1e3a5f}
+
+.wrap{max-width:620px;margin:0 auto;padding:.85rem .75rem}
+
+.seccion{background:#fff;border:1px solid var(--gris-brd);border-radius:var(--radio);margin-bottom:1rem;overflow:hidden;box-shadow:0 1px 4px rgba(0,0,0,.06)}
+.sec-head{padding:.6rem .9rem;display:flex;align-items:center;gap:.5rem;font-size:.73rem;font-weight:700;letter-spacing:.04em;text-transform:uppercase}
+.sec-head.azul{background:var(--azul);color:#fff}
+.sec-head.verde{background:#065F46;color:#fff}
+.sec-head.gris{background:#334155;color:#fff}
+.sec-head .num{background:rgba(255,255,255,.18);width:22px;height:22px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.72rem;font-weight:800;flex-shrink:0}
+.sec-body{padding:.85rem .9rem}
+
+.aviso{background:var(--ambar-bg);border:1px solid var(--ambar-brd);border-radius:6px;padding:.5rem .75rem;font-size:.7rem;color:#78350F;line-height:1.5;margin-bottom:.75rem}
+.aviso-bloq{background:#EFF6FF;border:1px solid var(--azul-brd);border-radius:6px;padding:.45rem .75rem;font-size:.68rem;color:#1e40af;line-height:1.5;margin-bottom:.75rem}
+
+.f{display:flex;flex-direction:column;gap:.22rem;margin-bottom:.65rem}
+.f:last-child{margin-bottom:0}
+.f label{font-size:.67rem;font-weight:700;color:var(--azul);display:flex;align-items:center;gap:.25rem;flex-wrap:wrap}
+.req{color:var(--rojo);font-size:.75rem}
+.hint{font-weight:400;color:var(--gris-txt);font-size:.62rem}
+.f input,.f select{
+  font-family:inherit;font-size:.85rem;padding:.52rem .65rem;
+  border-radius:6px;border:1.5px solid var(--gris-brd);
+  background:#fff;color:var(--negro);outline:none;width:100%;
+  -webkit-appearance:none;appearance:none;
+  transition:border-color .15s
+}
+.f input:focus,.f select:focus{border-color:var(--azul-med);box-shadow:0 0 0 3px rgba(37,99,168,.12)}
+.f input::placeholder{color:#B0BAC9}
+.f input[readonly]{background:#F1F5F9;color:#475569;border-color:#CBD5E1;cursor:default}
+.f select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='7'%3E%3Cpath fill='%2364748B' d='M5 7L0 0h10z'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right .7rem center;padding-right:1.8rem}
+
+.g2{display:grid;gap:.6rem;grid-template-columns:1fr 1fr}
+.g3{display:grid;gap:.6rem;grid-template-columns:1fr 1fr 1fr}
+@media(max-width:460px){.g2,.g3{grid-template-columns:1fr}}
+
+.viajero-block{border:1px solid var(--azul-brd);border-radius:6px;padding:.75rem .8rem;margin-bottom:.75rem;background:#FAFCFF}
+.viajero-block:last-child{margin-bottom:0}
+.vj-title{font-size:.72rem;font-weight:700;color:var(--azul);margin-bottom:.65rem;display:flex;align-items:center;gap:.4rem}
+.vj-num{background:var(--azul);color:#fff;width:20px;height:20px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.65rem;font-weight:800;flex-shrink:0}
+
+.tm-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch}
+table.tm{width:100%;border-collapse:collapse;font-size:.76rem;min-width:320px}
+.tm th{background:var(--azul-claro);color:var(--azul);font-weight:700;padding:.42rem .5rem;text-align:left;border:1px solid var(--azul-brd);font-size:.65rem}
+.tm td{border:1px solid var(--gris-brd);padding:.2rem .3rem}
+.tm tr:nth-child(even) td{background:#F8FAFC}
+.tm input{font-family:inherit;font-size:.78rem;padding:.35rem .4rem;border:none;width:100%;outline:none;background:transparent;color:var(--negro)}
+.tm input:focus{background:var(--azul-claro);border-radius:3px}
+
+.declaracion{background:#F0FDF4;border:1.5px solid #6EE7B7;border-radius:var(--radio);padding:.85rem .9rem;margin-bottom:.75rem}
+.declaracion p{font-size:.73rem;color:#064E3B;line-height:1.6;margin-bottom:.6rem}
+.declaracion strong{color:#065F46}
+.check-row{display:flex;align-items:flex-start;gap:.55rem;margin-top:.4rem}
+.check-row input[type=checkbox]{width:18px;height:18px;margin-top:.08rem;flex-shrink:0;accent-color:var(--verde);cursor:pointer}
+.check-row label{font-size:.73rem;color:#065F46;font-weight:600;line-height:1.4;cursor:pointer}
+
+.btn-enviar{width:100%;padding:.9rem;background:#25D366;color:#fff;border:none;border-radius:var(--radio);font-family:inherit;font-size:.95rem;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:.5rem;transition:background .15s;margin-top:.5rem;-webkit-appearance:none;letter-spacing:.01em}
+.btn-enviar:hover{background:#1ebe5d}
+.btn-enviar:active{background:#17a84f}
+
+.btn-nuevo{width:100%;margin-top:.6rem;padding:.55rem;background:var(--gris-bg);color:var(--azul);border:1.5px solid var(--azul-brd);border-radius:6px;font-family:inherit;font-size:.78rem;font-weight:600;cursor:pointer;-webkit-appearance:none}
+
+#toast{position:fixed;bottom:1.2rem;left:50%;transform:translateX(-50%) translateY(12px);background:var(--negro);color:#fff;padding:.55rem 1.1rem;border-radius:20px;font-size:.78rem;font-weight:500;opacity:0;transition:opacity .25s,transform .25s;z-index:999;pointer-events:none;white-space:nowrap}
+#toast.on{opacity:1;transform:translateX(-50%) translateY(0)}
+#toast.v{background:var(--verde)}
+#toast.r{background:var(--rojo)}
+
+.url-box{background:#0F2A4A;border-radius:6px;padding:.65rem .8rem;margin-bottom:.75rem;font-size:.68rem;color:#93C5FD;line-height:1.7}
+.url-box strong{color:#fff;display:block;margin-bottom:.2rem;font-size:.72rem}
+.url-box code{color:#6EE7B7;word-break:break-all;font-size:.67rem}
+</style>
+</head>
+<body>
+
+<header>
+  <h1>📋 Registro de Viajeros — Club Del Mar</h1>
+  <p>Real Decreto 933/2021 · SES.HOSPEDAJES · Ministerio del Interior</p>
+</header>
+<div class="aviso-prop">🔒 Nombre, NRA y dirección pre-rellenados · ✏️ Rellena los campos en blanco</div>
+
+<div class="wrap">
+
+<!-- ══ A. ALOJAMIENTO ══ -->
+<div class="seccion">
+  <div class="sec-head azul"><span class="num">A</span> Datos del alojamiento</div>
+  <div class="sec-body">
+    <div class="aviso-bloq">🔒 Nombre, registro y dirección: fijos. &nbsp;✏️ Método de pago, fechas y nº de viajeros: rellena tú.</div>
+    <div class="g2">
+      <div class="f"><label>Nombre del alojamiento</label><input id="nom_aloj" readonly tabindex="-1" value="Club Del Mar"></div>
+      <div class="f"><label>Nº Registro Turístico (NRA)</label><input id="nra" readonly tabindex="-1" value="VT-447908-A"></div>
+    </div>
+    <div class="f"><label>Dirección del alojamiento</label><input id="dir_aloj" readonly tabindex="-1" value="Avd. Benidorm, 18"></div>
+    <div class="f"><label>Método de pago <span class="req">*</span></label>
+      <select id="metodo_pago"><option value="">— Selecciona —</option><option>Tarjeta de crédito/débito</option><option>Transferencia bancaria</option><option>Efectivo</option><option>Plataforma online (Airbnb, Booking…)</option><option>Otro</option></select>
+    </div>
+    <div class="g3">
+      <div class="f"><label>Fecha entrada <span class="req">*</span></label><input type="date" id="fecha_entrada"></div>
+      <div class="f"><label>Fecha salida <span class="req">*</span></label><input type="date" id="fecha_salida"></div>
+      <div class="f"><label>Nº viajeros <span class="req">*</span></label><input type="number" id="num_viajeros" min="1" max="5" placeholder="1"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ B. VIAJEROS ══ -->
+<div class="seccion">
+  <div class="sec-head verde"><span class="num">B</span> Datos de los viajeros — Mayores de 16 años</div>
+  <div class="sec-body">
+    <div class="aviso">Rellena los datos de cada viajero adulto. El Viajero 1 es el titular del contrato. Los bloques adicionales aparecen al indicar el nº de viajeros arriba.</div>
+
+    <!-- VIAJERO 1 -->
+    <div class="viajero-block">
+      <div class="vj-title"><span class="vj-num">1</span> Viajero 1 — Titular del contrato</div>
+      <div class="g3">
+        <div class="f"><label>Nombre <span class="req">*</span></label><input id="t_nombre" autocomplete="given-name"></div>
+        <div class="f"><label>Primer apellido <span class="req">*</span></label><input id="t_ap1" autocomplete="family-name"></div>
+        <div class="f"><label>Segundo apellido <span class="hint">Oblig. si nació en España</span></label><input id="t_ap2"></div>
+      </div>
+      <div class="g3">
+        <div class="f"><label>Fecha de nacimiento <span class="req">*</span></label><input type="date" id="t_fnac"></div>
+        <div class="f"><label>Nacionalidad <span class="req">*</span></label><input id="t_nac" placeholder="Española…"></div>
+        <div class="f"><label>Tipo documento <span class="req">*</span></label>
+          <select id="t_tdoc"><option value="">—</option><option>DNI</option><option>NIE</option><option>Pasaporte</option><option>Permiso de residencia</option><option>Otro</option></select>
+        </div>
+      </div>
+      <div class="g2">
+        <div class="f"><label>Nº documento <span class="req">*</span></label><input id="t_ndoc" placeholder="12345678A"></div>
+        <div class="f"><label>Nº soporte <span class="req">*</span> <span class="hint">Reverso DNI/NIE</span></label><input id="t_soporte" placeholder="AAA000000"></div>
+      </div>
+      <div class="f"><label>Dirección habitual <span class="req">*</span></label><input id="t_dir" placeholder="Calle Mayor 10, 3ºA" autocomplete="street-address"></div>
+      <div class="g3">
+        <div class="f"><label>Municipio <span class="req">*</span></label><input id="t_municipio" autocomplete="address-level2"></div>
+        <div class="f"><label>Provincia / País <span class="req">*</span></label><input id="t_pais" placeholder="Valencia / España"></div>
+        <div class="f"><label>Teléfono móvil <span class="req">*</span></label><input type="tel" id="t_movil" placeholder="+34 600 000 000" autocomplete="tel"></div>
+      </div>
+      <div class="g2">
+        <div class="f"><label>Email <span class="req">*</span></label><input type="email" id="t_email" placeholder="correo@ejemplo.com" autocomplete="email"></div>
+        <div class="f"><label>Teléfono fijo <span class="hint">(si dispone)</span></label><input type="tel" id="t_fijo"></div>
+      </div>
+    </div>
+
+    <!-- VIAJERO 2 -->
+    <div class="viajero-block" id="bloque_v2" style="display:none">
+      <div class="vj-title"><span class="vj-num">2</span> Viajero 2</div>
+      <div class="g3">
+        <div class="f"><label>Nombre</label><input id="v2_nombre"></div>
+        <div class="f"><label>Primer apellido</label><input id="v2_ap1"></div>
+        <div class="f"><label>Segundo apellido</label><input id="v2_ap2"></div>
+      </div>
+      <div class="g3">
+        <div class="f"><label>Fecha nacimiento</label><input type="date" id="v2_fnac"></div>
+        <div class="f"><label>Nacionalidad</label><input id="v2_nac" placeholder="Española…"></div>
+        <div class="f"><label>Tipo documento</label>
+          <select id="v2_tdoc"><option value="">—</option><option>DNI</option><option>NIE</option><option>Pasaporte</option><option>Permiso de residencia</option><option>Otro</option></select>
+        </div>
+      </div>
+      <div class="g2">
+        <div class="f"><label>Nº documento</label><input id="v2_ndoc"></div>
+        <div class="f"><label>Nº soporte <span class="hint">Reverso DNI/NIE</span></label><input id="v2_soporte"></div>
+      </div>
+      <div class="f"><label>Dirección habitual</label><input id="v2_dir" placeholder="Calle, número, municipio, país"></div>
+      <div class="g2">
+        <div class="f"><label>Municipio</label><input id="v2_municipio"></div>
+        <div class="f"><label>Email / Teléfono</label><input id="v2_contacto"></div>
+      </div>
+    </div>
+
+    <!-- VIAJERO 3 -->
+    <div class="viajero-block" id="bloque_v3" style="display:none">
+      <div class="vj-title"><span class="vj-num">3</span> Viajero 3</div>
+      <div class="g3">
+        <div class="f"><label>Nombre</label><input id="v3_nombre"></div>
+        <div class="f"><label>Primer apellido</label><input id="v3_ap1"></div>
+        <div class="f"><label>Segundo apellido</label><input id="v3_ap2"></div>
+      </div>
+      <div class="g3">
+        <div class="f"><label>Fecha nacimiento</label><input type="date" id="v3_fnac"></div>
+        <div class="f"><label>Nacionalidad</label><input id="v3_nac" placeholder="Española…"></div>
+        <div class="f"><label>Tipo documento</label>
+          <select id="v3_tdoc"><option value="">—</option><option>DNI</option><option>NIE</option><option>Pasaporte</option><option>Permiso de residencia</option><option>Otro</option></select>
+        </div>
+      </div>
+      <div class="g2">
+        <div class="f"><label>Nº documento</label><input id="v3_ndoc"></div>
+        <div class="f"><label>Nº soporte <span class="hint">Reverso DNI/NIE</span></label><input id="v3_soporte"></div>
+      </div>
+      <div class="f"><label>Dirección habitual</label><input id="v3_dir"></div>
+      <div class="g2">
+        <div class="f"><label>Municipio</label><input id="v3_municipio"></div>
+        <div class="f"><label>Email / Teléfono</label><input id="v3_contacto"></div>
+      </div>
+    </div>
+
+    <!-- VIAJERO 4 -->
+    <div class="viajero-block" id="bloque_v4" style="display:none">
+      <div class="vj-title"><span class="vj-num">4</span> Viajero 4</div>
+      <div class="g3">
+        <div class="f"><label>Nombre</label><input id="v4_nombre"></div>
+        <div class="f"><label>Primer apellido</label><input id="v4_ap1"></div>
+        <div class="f"><label>Segundo apellido</label><input id="v4_ap2"></div>
+      </div>
+      <div class="g3">
+        <div class="f"><label>Fecha nacimiento</label><input type="date" id="v4_fnac"></div>
+        <div class="f"><label>Nacionalidad</label><input id="v4_nac" placeholder="Española…"></div>
+        <div class="f"><label>Tipo documento</label>
+          <select id="v4_tdoc"><option value="">—</option><option>DNI</option><option>NIE</option><option>Pasaporte</option><option>Permiso de residencia</option><option>Otro</option></select>
+        </div>
+      </div>
+      <div class="g2">
+        <div class="f"><label>Nº documento</label><input id="v4_ndoc"></div>
+        <div class="f"><label>Nº soporte <span class="hint">Reverso DNI/NIE</span></label><input id="v4_soporte"></div>
+      </div>
+      <div class="f"><label>Dirección habitual</label><input id="v4_dir"></div>
+      <div class="g2">
+        <div class="f"><label>Municipio</label><input id="v4_municipio"></div>
+        <div class="f"><label>Email / Teléfono</label><input id="v4_contacto"></div>
+      </div>
+    </div>
+
+    <!-- VIAJERO 5 -->
+    <div class="viajero-block" id="bloque_v5" style="display:none">
+      <div class="vj-title"><span class="vj-num">5</span> Viajero 5</div>
+      <div class="g3">
+        <div class="f"><label>Nombre</label><input id="v5_nombre"></div>
+        <div class="f"><label>Primer apellido</label><input id="v5_ap1"></div>
+        <div class="f"><label>Segundo apellido</label><input id="v5_ap2"></div>
+      </div>
+      <div class="g3">
+        <div class="f"><label>Fecha nacimiento</label><input type="date" id="v5_fnac"></div>
+        <div class="f"><label>Nacionalidad</label><input id="v5_nac" placeholder="Española…"></div>
+        <div class="f"><label>Tipo documento</label>
+          <select id="v5_tdoc"><option value="">—</option><option>DNI</option><option>NIE</option><option>Pasaporte</option><option>Permiso de residencia</option><option>Otro</option></select>
+        </div>
+      </div>
+      <div class="g2">
+        <div class="f"><label>Nº documento</label><input id="v5_ndoc"></div>
+        <div class="f"><label>Nº soporte <span class="hint">Reverso DNI/NIE</span></label><input id="v5_soporte"></div>
+      </div>
+      <div class="f"><label>Dirección habitual</label><input id="v5_dir"></div>
+      <div class="g2">
+        <div class="f"><label>Municipio</label><input id="v5_municipio"></div>
+        <div class="f"><label>Email / Teléfono</label><input id="v5_contacto"></div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ══ C. MENORES ══ -->
+<div class="seccion">
+  <div class="sec-head gris"><span class="num">C</span> Menores de 16 años</div>
+  <div class="sec-body">
+    <div class="aviso">Sin documento obligatorio. Solo nombre, fecha de nacimiento y parentesco. Deja en blanco las filas que no necesites.</div>
+    <div class="tm-wrap">
+      <table class="tm">
+        <thead><tr><th>Nombre completo</th><th style="width:140px">Fecha nacimiento</th><th style="width:150px">Parentesco</th></tr></thead>
+        <tbody>
+          <tr><td><input id="m1_nom" placeholder="Nombre y apellidos"></td><td><input type="date" id="m1_fnac"></td><td><input id="m1_par" placeholder="Hijo/a…"></td></tr>
+          <tr><td><input id="m2_nom"></td><td><input type="date" id="m2_fnac"></td><td><input id="m2_par"></td></tr>
+          <tr><td><input id="m3_nom"></td><td><input type="date" id="m3_fnac"></td><td><input id="m3_par"></td></tr>
+          <tr><td><input id="m4_nom"></td><td><input type="date" id="m4_fnac"></td><td><input id="m4_par"></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- ══ D. DECLARACIÓN ══ -->
+<div class="seccion">
+  <div class="sec-head azul"><span class="num">D</span> Declaración</div>
+  <div class="sec-body">
+    <div class="declaracion">
+      <p>El/La firmante declara que todos los datos cumplimentados son <strong>verídicos y completos</strong>, y consiente su comunicación a las FCSE conforme a la <strong>LO 4/2015</strong> y el <strong>RD 933/2021</strong>. Tratamiento de datos según <strong>RGPD (UE) 2016/679</strong> y <strong>LO 3/2018</strong>.</p>
+      <div class="check-row">
+        <input type="checkbox" id="acepto">
+        <label for="acepto">He leído y acepto la declaración anterior. Confirmo que los datos son verídicos.</label>
+      </div>
+    </div>
+    <div class="g2">
+      <div class="f"><label>Lugar <span class="req">*</span></label><input id="firma_lugar" placeholder="Ciudad…"></div>
+      <div class="f"><label>Fecha <span class="req">*</span></label><input type="date" id="firma_fecha"></div>
+    </div>
+    <div class="f" style="margin-top:.5rem"><label>Nombre completo del declarante <span class="req">*</span></label><input id="firma_nombre" placeholder="Nombre y apellidos del titular"></div>
+  </div>
+</div>
+
+<!-- ══ BOTÓN WHATSAPP ══ -->
+<button class="btn-enviar" onclick="enviarWhatsApp()">
+  <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12 0C5.373 0 0 5.373 0 12c0 2.124.558 4.168 1.61 5.943L0 24l6.234-1.586A11.956 11.956 0 0012 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 21.818a9.818 9.818 0 01-5.006-1.374l-.36-.214-3.7.942.987-3.596-.235-.37A9.818 9.818 0 1112 21.818z"/></svg>
+  Enviar registro por WhatsApp
+</button>
+<button class="btn-nuevo" onclick="nuevoRegistro()">↩ Limpiar formulario</button>
+
+</div><!-- /wrap -->
+
+<div id="toast"></div>
+
+<script>
+// ══ NÚMERO DESTINO ══
+const WA_NUM = '34685547660';
+
+// ══ LEER PARÁMETROS URL ══
+// Uso: ?entrada=2026-07-15&salida=2026-07-22&viajeros=3&pago=Efectivo
+(function(){
+  const p = new URLSearchParams(window.location.search);
+  if(p.get('entrada'))  setVal('fecha_entrada', p.get('entrada'));
+  if(p.get('salida'))   setVal('fecha_salida',  p.get('salida'));
+  if(p.get('viajeros')) setVal('num_viajeros',  p.get('viajeros'));
+  if(p.get('pago')){
+    const sel = document.getElementById('metodo_pago');
+    // Intentar match exacto primero, luego parcial
+    const opts = Array.from(sel.options);
+    const match = opts.find(o => o.text === p.get('pago')) ||
+                  opts.find(o => o.text.toLowerCase().includes(p.get('pago').toLowerCase()));
+    if(match) sel.value = match.value || match.text;
+  }
+
+  // Fecha declaración = hoy
+  document.getElementById('firma_fecha').value = new Date().toISOString().slice(0,10);
+
+  // Mostrar bloques según viajeros iniciales
+  actualizarBloques();
+
+  // Listener para cambios en tiempo real
+  document.getElementById('num_viajeros').addEventListener('input', actualizarBloques);
+  document.getElementById('num_viajeros').addEventListener('change', actualizarBloques);
+})();
+
+function setVal(id, val){
+  const el = document.getElementById(id);
+  if(el) el.value = val;
+}
+
+function actualizarBloques(){
+  const n = parseInt(document.getElementById('num_viajeros').value) || 1;
+  for(let i = 2; i <= 5; i++){
+    const b = document.getElementById('bloque_v' + i);
+    if(b) b.style.display = (i <= n) ? '' : 'none';
+  }
+}
+
+// ══ FORMATO FECHA ══
+function fmtFecha(iso){
+  if(!iso) return '—';
+  const [y,m,d] = iso.split('-');
+  return d+'/'+m+'/'+y;
+}
+
+// ══ VALOR CAMPO ══
+function v(id){ const el = document.getElementById(id); return el ? el.value.trim() : ''; }
+
+// ══ ENVIAR POR WHATSAPP ══
+function enviarWhatsApp(){
+  // Validación alojamiento
+  const reqAloj = ['metodo_pago','fecha_entrada','fecha_salida','num_viajeros'];
+  const vaciAloj = reqAloj.find(id => !v(id));
+  if(vaciAloj){
+    toast('⚠️ Completa método de pago, fechas y nº de viajeros', 'r');
+    document.getElementById(vaciAloj).focus();
+    return;
+  }
+  // Validación titular
+  const reqTit = ['t_nombre','t_ap1','t_fnac','t_nac','t_tdoc','t_ndoc','t_soporte','t_dir','t_municipio','t_pais','t_movil','t_email','firma_lugar','firma_fecha','firma_nombre'];
+  const vaciTit = reqTit.find(id => !v(id));
+  if(vaciTit){
+    toast('⚠️ Rellena todos los campos obligatorios del Titular', 'r');
+    document.getElementById(vaciTit).focus();
+    return;
+  }
+  if(!document.getElementById('acepto').checked){
+    toast('⚠️ Debes aceptar la declaración', 'r');
+    document.getElementById('acepto').focus();
+    return;
+  }
+
+  // Construir texto
+  let txt = '';
+  txt += '━━━━━━━━━━━━━━━━━━━━━━━━\n';
+  txt += '📋 REGISTRO DE VIAJEROS\n';
+  txt += 'RD 933/2021 · SES.HOSPEDAJES\n';
+  txt += '━━━━━━━━━━━━━━━━━━━━━━━━\n\n';
+
+  txt += '🏠 ALOJAMIENTO\n';
+  txt += '──────────────\n';
+  txt += 'Nombre: Club Del Mar\n';
+  txt += 'NRA: VT-447908-A\n';
+  txt += 'Dirección: Avd. Benidorm, 18\n';
+  txt += 'Pago: ' + v('metodo_pago') + '\n';
+  txt += 'Entrada: ' + fmtFecha(v('fecha_entrada')) + '\n';
+  txt += 'Salida: ' + fmtFecha(v('fecha_salida')) + '\n';
+  txt += 'Nº viajeros: ' + v('num_viajeros') + '\n\n';
+
+  txt += '👤 VIAJEROS ADULTOS\n';
+  txt += '───────────────────\n';
+
+  // Titular
+  txt += '\n[VIAJERO 1 — TITULAR]\n';
+  txt += 'Nombre: ' + v('t_nombre') + ' ' + v('t_ap1') + (v('t_ap2') ? ' ' + v('t_ap2') : '') + '\n';
+  txt += 'F. nac.: ' + fmtFecha(v('t_fnac')) + '\n';
+  txt += 'Nac.: ' + v('t_nac') + '\n';
+  txt += 'Doc.: ' + v('t_tdoc') + ' · ' + v('t_ndoc') + '\n';
+  txt += 'Soporte: ' + v('t_soporte') + '\n';
+  txt += 'Dirección: ' + v('t_dir') + ', ' + v('t_municipio') + ', ' + v('t_pais') + '\n';
+  txt += 'Móvil: ' + v('t_movil') + '\n';
+  txt += 'Email: ' + v('t_email') + '\n';
+  if(v('t_fijo')) txt += 'Fijo: ' + v('t_fijo') + '\n';
+
+  // Viajeros 2-5
+  [{n:2,p:'v2'},{n:3,p:'v3'},{n:4,p:'v4'},{n:5,p:'v5'}].forEach(({n:num, p:pre}) => {
+    const bloque = document.getElementById('bloque_v'+num);
+    if(!bloque || bloque.style.display === 'none') return;
+    const nombre = v(pre+'_nombre');
+    if(!nombre) return;
+    txt += '\n[VIAJERO ' + num + ']\n';
+    txt += 'Nombre: ' + nombre + ' ' + v(pre+'_ap1') + (v(pre+'_ap2') ? ' ' + v(pre+'_ap2') : '') + '\n';
+    if(v(pre+'_fnac'))    txt += 'F. nac.: ' + fmtFecha(v(pre+'_fnac')) + '\n';
+    if(v(pre+'_nac'))     txt += 'Nac.: ' + v(pre+'_nac') + '\n';
+    if(v(pre+'_tdoc'))    txt += 'Doc.: ' + v(pre+'_tdoc') + ' · ' + v(pre+'_ndoc') + '\n';
+    if(v(pre+'_soporte')) txt += 'Soporte: ' + v(pre+'_soporte') + '\n';
+    if(v(pre+'_dir')){
+      txt += 'Dirección: ' + v(pre+'_dir');
+      if(v(pre+'_municipio')) txt += ', ' + v(pre+'_municipio');
+      txt += '\n';
+    }
+    if(v(pre+'_contacto')) txt += 'Contacto: ' + v(pre+'_contacto') + '\n';
+  });
+
+  // Menores
+  const menores = [1,2,3,4].map(i => ({
+    nom: v('m'+i+'_nom'), fnac: v('m'+i+'_fnac'), par: v('m'+i+'_par')
+  })).filter(m => m.nom);
+  if(menores.length > 0){
+    txt += '\n👶 MENORES DE 16 AÑOS\n';
+    txt += '──────────────────────\n';
+    menores.forEach((m, i) => {
+      txt += (i+1) + '. ' + m.nom;
+      if(m.fnac) txt += ' · ' + fmtFecha(m.fnac);
+      if(m.par)  txt += ' · ' + m.par;
+      txt += '\n';
+    });
+  }
+
+  // Declaración
+  txt += '\n✅ DECLARACIÓN\n';
+  txt += '──────────────\n';
+  txt += 'Declaro que los datos son verídicos y consiento su comunicación\n';
+  txt += 'a las FCSE (LO 4/2015 · RD 933/2021 · RGPD 2016/679).\n\n';
+  txt += 'Lugar: ' + v('firma_lugar') + '\n';
+  txt += 'Fecha: ' + fmtFecha(v('firma_fecha')) + '\n';
+  txt += 'Declarante: ' + v('firma_nombre') + '\n';
+  txt += '━━━━━━━━━━━━━━━━━━━━━━━━';
+
+  // Abrir WhatsApp
+  const url = 'https://wa.me/' + WA_NUM + '?text=' + encodeURIComponent(txt);
+  window.open(url, '_blank');
+  toast('✅ Abriendo WhatsApp…', 'v');
+}
+
+// ══ LIMPIAR ══
+function nuevoRegistro(){
+  if(!confirm('¿Limpiar todos los datos del huésped?')) return;
+  const fijos = new Set(['nom_aloj','nra','dir_aloj']);
+  fijos.add('acepto');
+  document.querySelectorAll('input:not([readonly]):not([type=checkbox]), select').forEach(el => {
+    if(!fijos.has(el.id)) el.value = '';
+  });
+  document.getElementById('acepto').checked = false;
+  document.getElementById('firma_fecha').value = new Date().toISOString().slice(0,10);
+  for(let i = 2; i <= 5; i++){
+    const b = document.getElementById('bloque_v' + i);
+    if(b) b.style.display = 'none';
+  }
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+// ══ TOAST ══
+function toast(msg, tipo){
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.className = 'on' + (tipo ? ' '+tipo : '');
+  clearTimeout(t._t);
+  t._t = setTimeout(() => { t.className = ''; }, 2800);
+}
+</script>
+</body>
+</html>
