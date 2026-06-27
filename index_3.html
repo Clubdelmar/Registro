@@ -1,0 +1,517 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>Registro de Viajeros — Club Del Mar</title>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --azul:#1B3F6E;--azul-med:#2563A8;--azul-claro:#EFF6FF;--azul-brd:#BFDBFE;
+  --gris-bg:#F1F5F9;--gris-brd:#CBD5E1;--gris-txt:#64748B;--negro:#0F172A;
+  --verde:#059669;--rojo:#DC2626;--ambar-bg:#FFFBEB;--ambar-brd:#FDE68A;
+  --radio:8px;--wa:#25D366;
+}
+html{font-size:15px;-webkit-text-size-adjust:100%}
+body{font-family:'Segoe UI',system-ui,-apple-system,sans-serif;background:var(--gris-bg);color:var(--negro);padding:0 0 3rem}
+header{background:var(--azul);color:#fff;padding:1.1rem 1rem 1rem;border-bottom:3px solid #0F2A4A}
+header h1{font-size:1rem;font-weight:700}
+header p{font-size:.68rem;color:#93C5FD;margin-top:.25rem;line-height:1.4}
+.aviso-prop{background:#0F2A4A;color:#93C5FD;padding:.55rem 1rem;font-size:.68rem;text-align:center;border-bottom:1px solid #1e3a5f}
+.wrap{max-width:620px;margin:0 auto;padding:.85rem .75rem}
+.seccion{background:#fff;border:1px solid var(--gris-brd);border-radius:var(--radio);margin-bottom:1rem;overflow:hidden;box-shadow:0 1px 4px rgba(0,0,0,.06)}
+.sec-head{padding:.6rem .9rem;display:flex;align-items:center;gap:.5rem;font-size:.73rem;font-weight:700;letter-spacing:.04em;text-transform:uppercase}
+.sec-head.azul{background:var(--azul);color:#fff}
+.sec-head.verde{background:#065F46;color:#fff}
+.sec-head.gris{background:#334155;color:#fff}
+.sec-head.naranja{background:#92400E;color:#fff}
+.sec-head .num{background:rgba(255,255,255,.18);width:22px;height:22px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.72rem;font-weight:800;flex-shrink:0}
+.sec-body{padding:.85rem .9rem}
+.aviso{background:var(--ambar-bg);border:1px solid var(--ambar-brd);border-radius:6px;padding:.5rem .75rem;font-size:.7rem;color:#78350F;line-height:1.5;margin-bottom:.75rem}
+.aviso-bloq{background:#EFF6FF;border:1px solid var(--azul-brd);border-radius:6px;padding:.45rem .75rem;font-size:.68rem;color:#1e40af;line-height:1.5;margin-bottom:.75rem}
+.f{display:flex;flex-direction:column;gap:.22rem;margin-bottom:.65rem}
+.f:last-child{margin-bottom:0}
+.f label{font-size:.67rem;font-weight:700;color:var(--azul);display:flex;align-items:center;gap:.25rem;flex-wrap:wrap;line-height:1.3}
+.f label .en{font-weight:400;color:var(--gris-txt);font-size:.62rem}
+.req{color:var(--rojo);font-size:.75rem}
+.hint{font-weight:400;color:var(--gris-txt);font-size:.62rem}
+.f input,.f select{font-family:inherit;font-size:.85rem;padding:.52rem .65rem;border-radius:6px;border:1.5px solid var(--gris-brd);background:#fff;color:var(--negro);outline:none;width:100%;-webkit-appearance:none;appearance:none;transition:border-color .15s}
+.f input:focus,.f select:focus{border-color:var(--azul-med);box-shadow:0 0 0 3px rgba(37,99,168,.12)}
+.f input::placeholder{color:#B0BAC9}
+.f input[readonly]{background:#F1F5F9;color:#475569;border-color:#CBD5E1;cursor:default}
+.f select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='7'%3E%3Cpath fill='%2364748B' d='M5 7L0 0h10z'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right .7rem center;padding-right:1.8rem}
+/* Nacionalidad autocomplete */
+.nac-wrap{position:relative}
+.nac-wrap input{width:100%}
+.nac-drop{position:absolute;top:100%;left:0;right:0;background:#fff;border:1.5px solid var(--azul-med);border-top:none;border-radius:0 0 6px 6px;max-height:180px;overflow-y:auto;z-index:100;display:none;box-shadow:0 4px 12px rgba(0,0,0,.12)}
+.nac-drop.open{display:block}
+.nac-item{padding:.45rem .65rem;font-size:.82rem;cursor:pointer;color:var(--negro)}
+.nac-item:hover,.nac-item.sel{background:var(--azul-claro);color:var(--azul)}
+.g2{display:grid;gap:.6rem;grid-template-columns:1fr 1fr}
+.g3{display:grid;gap:.6rem;grid-template-columns:1fr 1fr 1fr}
+@media(max-width:460px){.g2,.g3{grid-template-columns:1fr}}
+.viajero-block{border:1px solid var(--azul-brd);border-radius:6px;padding:.75rem .8rem;margin-bottom:.75rem;background:#FAFCFF}
+.viajero-block:last-child{margin-bottom:0}
+.vj-title{font-size:.72rem;font-weight:700;color:var(--azul);margin-bottom:.65rem;display:flex;align-items:center;gap:.4rem}
+.vj-num{background:var(--azul);color:#fff;width:20px;height:20px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.65rem;font-weight:800;flex-shrink:0}
+.tm-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch}
+table.tm{width:100%;border-collapse:collapse;font-size:.76rem;min-width:320px}
+.tm th{background:var(--azul-claro);color:var(--azul);font-weight:700;padding:.42rem .5rem;text-align:left;border:1px solid var(--azul-brd);font-size:.63rem;line-height:1.3}
+.tm td{border:1px solid var(--gris-brd);padding:.2rem .3rem}
+.tm input{font-family:inherit;font-size:.78rem;padding:.35rem .4rem;border:none;width:100%;outline:none;background:transparent;color:var(--negro)}
+.tm input:focus{background:var(--azul-claro);border-radius:3px}
+.declaracion{background:#F0FDF4;border:1.5px solid #6EE7B7;border-radius:var(--radio);padding:.85rem .9rem;margin-bottom:.75rem}
+.declaracion p{font-size:.73rem;color:#064E3B;line-height:1.6;margin-bottom:.6rem}
+.declaracion strong{color:#065F46}
+.check-row{display:flex;align-items:flex-start;gap:.55rem;margin-top:.4rem}
+.check-row input[type=checkbox]{width:18px;height:18px;margin-top:.08rem;flex-shrink:0;accent-color:var(--verde);cursor:pointer}
+.check-row label{font-size:.73rem;color:#065F46;font-weight:600;line-height:1.4;cursor:pointer}
+.visor-banner{background:#065F46;color:#fff;padding:.7rem .9rem;border-radius:var(--radio);margin-bottom:1rem;font-size:.78rem;font-weight:600;display:none;align-items:center;gap:.5rem}
+.visor-banner.on{display:flex}
+.btn-wa{width:100%;padding:.9rem;background:var(--wa);color:#fff;border:none;border-radius:var(--radio);font-family:inherit;font-size:.95rem;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:.5rem;transition:background .15s;margin-top:.5rem;-webkit-appearance:none}
+.btn-wa:hover{background:#1ebe5d}
+.btn-sec{width:100%;margin-top:.5rem;padding:.65rem;border:none;border-radius:var(--radio);font-family:inherit;font-size:.82rem;font-weight:600;cursor:pointer;-webkit-appearance:none;display:flex;align-items:center;justify-content:center;gap:.4rem}
+.btn-azul{background:var(--azul);color:#fff}
+.btn-gris{background:var(--gris-bg);color:var(--azul);border:1.5px solid var(--azul-brd)!important}
+#file-input{display:none}
+.gen-box{background:#fff;border:2px solid var(--azul-brd);border-radius:var(--radio);padding:1rem;margin-bottom:1rem;box-shadow:0 1px 4px rgba(0,0,0,.06)}
+.gen-box h2{font-size:.85rem;font-weight:700;color:var(--azul);margin-bottom:.75rem}
+.enlace-resultado{background:#0F2A4A;border-radius:6px;padding:.75rem .9rem;margin-top:.75rem;display:none}
+.enlace-resultado p{font-size:.65rem;color:#93C5FD;margin-bottom:.35rem;font-weight:600;text-transform:uppercase;letter-spacing:.04em}
+.enlace-resultado code{display:block;color:#6EE7B7;font-size:.67rem;word-break:break-all;line-height:1.6;font-family:'Courier New',monospace}
+.btn-copiar-enlace{width:100%;margin-top:.6rem;padding:.6rem;background:var(--wa);color:#fff;border:none;border-radius:6px;font-family:inherit;font-size:.8rem;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:.35rem}
+.btn-wa-directo{width:100%;margin-top:.4rem;padding:.6rem;background:var(--azul);color:#fff;border:none;border-radius:6px;font-family:inherit;font-size:.8rem;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:.35rem}
+/* JSON paste area */
+.json-area{width:100%;min-height:100px;font-family:'Courier New',monospace;font-size:.72rem;padding:.6rem;border:1.5px solid var(--gris-brd);border-radius:6px;outline:none;resize:vertical;color:var(--negro);margin-top:.5rem}
+.json-area:focus{border-color:var(--azul-med)}
+#toast{position:fixed;bottom:1.2rem;left:50%;transform:translateX(-50%) translateY(12px);background:var(--negro);color:#fff;padding:.55rem 1.1rem;border-radius:20px;font-size:.78rem;font-weight:500;opacity:0;transition:opacity .25s,transform .25s;z-index:999;pointer-events:none;white-space:nowrap}
+#toast.on{opacity:1;transform:translateX(-50%) translateY(0)}
+#toast.v{background:var(--verde)}
+#toast.r{background:var(--rojo)}
+</style>
+</head>
+<body>
+<header>
+  <h1>📋 Registro de Viajeros — Club Del Mar</h1>
+  <p>Real Decreto 933/2021 · SES.HOSPEDAJES · Ministerio del Interior</p>
+</header>
+<div class="aviso-prop" id="modo-aviso">🔒 Nombre, NRA y dirección fijos · ✏️ Rellena los campos en blanco</div>
+<div class="wrap">
+
+<!-- ══ MODO PROPIETARIO ══ -->
+<div id="pantalla-propietario" style="display:none">
+  <div class="gen-box">
+    <h2>🔗 Generar enlace para el huésped / Generate guest link</h2>
+    <div class="g2">
+      <div class="f"><label>Fecha entrada <span class="en">/ Check-in date</span> <span class="req">*</span></label><input type="date" id="gen_entrada"></div>
+      <div class="f"><label>Fecha salida <span class="en">/ Check-out date</span> <span class="req">*</span></label><input type="date" id="gen_salida"></div>
+    </div>
+    <div class="f"><label>Método de pago <span class="en">/ Payment method</span> <span class="req">*</span></label>
+      <select id="gen_pago">
+        <option value="">— Selecciona / Select —</option>
+        <option>Tarjeta de crédito/débito / Credit-Debit card</option>
+        <option>Transferencia bancaria / Bank transfer</option>
+        <option>Efectivo / Cash</option>
+        <option>Plataforma online (Airbnb, Booking…)</option>
+        <option>Otro / Other</option>
+      </select>
+    </div>
+    <button class="btn-wa" onclick="generarEnlace()" style="margin-top:.6rem">🔗 Generar enlace / Generate link</button>
+    <div class="enlace-resultado" id="enlace-resultado">
+      <p>✅ Enlace listo — cópialo y mándalo al huésped</p>
+      <code id="enlace-texto"></code>
+      <button class="btn-copiar-enlace" onclick="copiarEnlace()">📋 Copiar enlace / Copy link</button>
+      <button class="btn-wa-directo" onclick="abrirWAConEnlace()">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12 0C5.373 0 0 5.373 0 12c0 2.124.558 4.168 1.61 5.943L0 24l6.234-1.586A11.956 11.956 0 0012 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 21.818a9.818 9.818 0 01-5.006-1.374l-.36-.214-3.7.942.987-3.596-.235-.37A9.818 9.818 0 1112 21.818z"/></svg>
+        Enviar al huésped por WhatsApp
+      </button>
+    </div>
+  </div>
+
+  <div class="seccion">
+    <div class="sec-head naranja"><span class="num">📋</span> Cargar registro del huésped</div>
+    <div class="sec-body">
+      <div class="aviso-bloq">Opción A: pega el texto JSON recibido por WhatsApp. &nbsp;Opción B: carga directamente el fichero .json guardado.</div>
+
+      <div style="font-size:.68rem;font-weight:700;color:var(--azul);margin-bottom:.3rem;margin-top:.1rem">A) Pegar texto / Paste text</div>
+      <textarea class="json-area" id="json-paste" placeholder='Pega aquí el JSON recibido por WhatsApp / Paste here the JSON received via WhatsApp...'></textarea>
+      <button class="btn-sec btn-azul" onclick="cargarJSONTexto()" style="margin-top:.4rem">📋 Cargar texto / Load text</button>
+
+      <div style="font-size:.68rem;font-weight:700;color:var(--azul);margin-bottom:.3rem;margin-top:.8rem">B) Cargar fichero / Load file</div>
+      <button class="btn-sec" style="background:#334155;color:#fff;margin-top:0" onclick="document.getElementById('file-input').click()">📎 Seleccionar fichero .json / Select .json file</button>
+      <input type="file" id="file-input" accept=".json" onchange="cargarFicheroJSON(event)">
+
+      <div style="border-top:1px solid var(--gris-brd);margin:.75rem 0"></div>
+      <button class="btn-sec" style="background:#065F46;color:#fff;margin-top:0" onclick="descargarJSON()">💾 Descargar JSON / Download JSON</button>
+      <button class="btn-sec btn-gris" onclick="limpiarVisor()">↩ Limpiar / Clear</button>
+    </div>
+  </div>
+
+  <div id="visor-formulario" style="display:none"></div>
+</div>
+
+<!-- ══ MODO HUÉSPED ══ -->
+<div id="pantalla-huesped">
+  <div class="visor-banner" id="visor-banner"></div>
+
+  <!-- A. ALOJAMIENTO -->
+  <div class="seccion">
+    <div class="sec-head azul"><span class="num">A</span> Datos del alojamiento / Accommodation details</div>
+    <div class="sec-body">
+      <div class="aviso-bloq">🔒 Nombre, registro y dirección: fijos. &nbsp;✏️ Fechas y pago pre-rellenados por el propietario / Pre-filled by the host.</div>
+      <div class="g2">
+        <div class="f"><label>Nombre / Name</label><input id="nom_aloj" readonly tabindex="-1" value="Club Del Mar"></div>
+        <div class="f"><label>Nº Registro / Registration No.</label><input id="nra" readonly tabindex="-1" value="VT-447908-A"></div>
+      </div>
+      <div class="f"><label>Dirección / Address</label><input id="dir_aloj" readonly tabindex="-1" value="Avd. Benidorm, 18"></div>
+      <div class="f"><label>Método de pago / Payment method</label><input id="metodo_pago" readonly tabindex="-1"></div>
+      <div class="g2">
+        <div class="f"><label>Fecha entrada / Check-in</label><input type="date" id="fecha_entrada" readonly tabindex="-1"></div>
+        <div class="f"><label>Fecha salida / Check-out</label><input type="date" id="fecha_salida" readonly tabindex="-1"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- B. VIAJEROS -->
+  <div class="seccion">
+    <div class="sec-head verde"><span class="num">B</span> Datos de los viajeros / Guest details — (+16 años/years)</div>
+    <div class="sec-body">
+      <div class="aviso">Rellena los datos de cada viajero adulto. El Viajero 1 es el titular. / Fill in the details of each adult guest. Guest 1 is the main contact.</div>
+
+      <!-- VIAJERO 1 -->
+      <div class="viajero-block">
+        <div class="vj-title"><span class="vj-num">1</span> Viajero 1 — Titular / Main guest</div>
+        <div class="g3">
+          <div class="f"><label>Nombre <span class="en">/ First name</span> <span class="req">*</span></label><input id="t_nombre" autocomplete="given-name"></div>
+          <div class="f"><label>Primer apellido <span class="en">/ Last name</span> <span class="req">*</span></label><input id="t_ap1" autocomplete="family-name"></div>
+          <div class="f"><label>Segundo apellido <span class="en">/ 2nd last name</span> <span class="hint">(España/Spain)</span></label><input id="t_ap2"></div>
+        </div>
+        <div class="g2">
+          <div class="f"><label>Fecha nacimiento <span class="en">/ Date of birth</span> <span class="req">*</span></label><input type="date" id="t_fnac"></div>
+          <div class="f"><label>Nacionalidad <span class="en">/ Nationality</span> <span class="req">*</span></label>
+            <div class="nac-wrap">
+              <input type="text" id="t_nac" placeholder="Escribe / Type..." autocomplete="off" oninput="filtrarNac(this,'t_nac_drop')" onfocus="filtrarNac(this,'t_nac_drop')" onblur="cerrarDrop('t_nac_drop')">
+              <div class="nac-drop" id="t_nac_drop"></div>
+            </div>
+          </div>
+        </div>
+        <div class="g3">
+          <div class="f"><label>Tipo documento <span class="en">/ Doc. type</span> <span class="req">*</span></label>
+            <select id="t_tdoc"><option value="">—</option><option>DNI</option><option>NIE</option><option>Pasaporte / Passport</option><option>Permiso residencia / Residence permit</option><option>Otro / Other</option></select>
+          </div>
+          <div class="f"><label>Nº documento <span class="en">/ Doc. number</span> <span class="req">*</span></label><input id="t_ndoc" placeholder="12345678A"></div>
+          <div class="f"><label>Nº soporte <span class="en">/ Support no.</span> <span class="req">*</span> <span class="hint">Reverso DNI/NIE</span></label><input id="t_soporte" placeholder="AAA000000"></div>
+        </div>
+        <div class="f"><label>Dirección habitual <span class="en">/ Home address</span> <span class="req">*</span></label><input id="t_dir" placeholder="Calle/Street, número/number..."></div>
+        <div class="g3">
+          <div class="f"><label>Municipio <span class="en">/ City</span></label><input id="t_municipio"></div>
+          <div class="f"><label>Provincia / País <span class="en">/ Country</span> <span class="req">*</span></label><input id="t_pais" placeholder="España / Spain…"></div>
+          <div class="f"><label>Teléfono móvil <span class="en">/ Mobile phone</span> <span class="req">*</span></label><input type="tel" id="t_movil" placeholder="+34 600 000 000"></div>
+        </div>
+        <div class="g2">
+          <div class="f"><label>Email <span class="req">*</span></label><input type="email" id="t_email" placeholder="correo@ejemplo.com"></div>
+          <div class="f"><label>Teléfono fijo <span class="en">/ Landline</span> <span class="hint">(opcional)</span></label><input type="tel" id="t_fijo"></div>
+        </div>
+      </div>
+
+      <!-- VIAJERO 2 -->
+      <div class="viajero-block" id="bloque_v2">
+        <div class="vj-title"><span class="vj-num">2</span> Viajero 2 <span class="hint">(si aplica / if applicable)</span></div>
+        <div class="g3">
+          <div class="f"><label>Nombre <span class="en">/ First name</span></label><input id="v2_nombre"></div>
+          <div class="f"><label>Primer apellido <span class="en">/ Last name</span></label><input id="v2_ap1"></div>
+          <div class="f"><label>Segundo apellido <span class="en">/ 2nd last name</span></label><input id="v2_ap2"></div>
+        </div>
+        <div class="g2">
+          <div class="f"><label>Fecha nacimiento <span class="en">/ Date of birth</span></label><input type="date" id="v2_fnac"></div>
+          <div class="f"><label>Nacionalidad <span class="en">/ Nationality</span></label>
+            <div class="nac-wrap">
+              <input type="text" id="v2_nac" placeholder="Escribe / Type..." autocomplete="off" oninput="filtrarNac(this,'v2_nac_drop')" onfocus="filtrarNac(this,'v2_nac_drop')" onblur="cerrarDrop('v2_nac_drop')">
+              <div class="nac-drop" id="v2_nac_drop"></div>
+            </div>
+          </div>
+        </div>
+        <div class="g3">
+          <div class="f"><label>Tipo documento <span class="en">/ Doc. type</span></label>
+            <select id="v2_tdoc"><option value="">—</option><option>DNI</option><option>NIE</option><option>Pasaporte / Passport</option><option>Permiso residencia / Residence permit</option><option>Otro / Other</option></select>
+          </div>
+          <div class="f"><label>Nº documento <span class="en">/ Doc. number</span></label><input id="v2_ndoc"></div>
+          <div class="f"><label>Nº soporte <span class="en">/ Support no.</span> <span class="hint">Reverso DNI/NIE</span></label><input id="v2_soporte"></div>
+        </div>
+        <div class="f"><label>Dirección habitual <span class="en">/ Home address</span></label><input id="v2_dir"></div>
+        <div class="g3">
+          <div class="f"><label>Municipio <span class="en">/ City</span></label><input id="v2_municipio"></div>
+          <div class="f"><label>Provincia / País <span class="en">/ Country</span></label><input id="v2_pais"></div>
+          <div class="f"><label>Email / Teléfono <span class="en">/ Phone</span></label><input id="v2_contacto"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- C. MENORES -->
+  <div class="seccion">
+    <div class="sec-head gris"><span class="num">C</span> Menores de 16 años / Under 16</div>
+    <div class="sec-body">
+      <div class="aviso">Sin documento obligatorio. Deja en blanco si no hay menores. / No ID required. Leave blank if no minors.</div>
+      <div class="tm-wrap">
+        <table class="tm">
+          <thead><tr>
+            <th>Nombre completo / Full name</th>
+            <th style="width:130px">F. nacimiento / Date of birth</th>
+            <th style="width:130px">Parentesco / Relationship</th>
+          </tr></thead>
+          <tbody>
+            <tr><td><input id="m1_nom" placeholder="Nombre / Name"></td><td><input type="date" id="m1_fnac"></td><td><input id="m1_par" placeholder="Hijo/a / Child…"></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- D. DECLARACIÓN -->
+  <div class="seccion">
+    <div class="sec-head azul"><span class="num">D</span> Declaración / Declaration</div>
+    <div class="sec-body">
+      <div class="declaracion">
+        <p>El/La firmante declara que todos los datos son <strong>verídicos y completos</strong>, y consiente su comunicación a las FCSE conforme a la <strong>LO 4/2015</strong> y el <strong>RD 933/2021</strong>. Tratamiento según <strong>RGPD (UE) 2016/679</strong> y <strong>LO 3/2018</strong>.<br><br>
+        <em>The undersigned declares that all data provided is <strong>truthful and complete</strong>, and consents to its communication to the Spanish Security Forces under <strong>LO 4/2015</strong> and <strong>RD 933/2021</strong>. Data processed under <strong>GDPR (EU) 2016/679</strong>.</em></p>
+        <div class="check-row">
+          <input type="checkbox" id="acepto">
+          <label for="acepto">Acepto / I accept — Confirmo que los datos son verídicos / I confirm the data is truthful.</label>
+        </div>
+      </div>
+      <div class="g2">
+        <div class="f"><label>Lugar <span class="en">/ Place</span> <span class="req">*</span></label><input id="firma_lugar" placeholder="Ciudad / City…"></div>
+        <div class="f"><label>Fecha <span class="en">/ Date</span> <span class="req">*</span></label><input type="date" id="firma_fecha"></div>
+      </div>
+      <div class="f" style="margin-top:.5rem"><label>Nombre del declarante <span class="en">/ Full name of declarant</span> <span class="req">*</span></label><input id="firma_nombre" placeholder="Nombre y apellidos / Full name"></div>
+    </div>
+  </div>
+
+  <button class="btn-wa" onclick="enviarWhatsApp()">
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12 0C5.373 0 0 5.373 0 12c0 2.124.558 4.168 1.61 5.943L0 24l6.234-1.586A11.956 11.956 0 0012 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 21.818a9.818 9.818 0 01-5.006-1.374l-.36-.214-3.7.942.987-3.596-.235-.37A9.818 9.818 0 1112 21.818z"/></svg>
+    Enviar registro por WhatsApp / Send via WhatsApp
+  </button>
+</div><!-- /pantalla-huesped -->
+
+</div><!-- /wrap -->
+<div id="toast"></div>
+
+<script>
+const WA_NUM = '34685547660';
+const BASE_URL = 'https://clubdelmar.github.io/Registro';
+const params = new URLSearchParams(window.location.search);
+const modo = params.get('modo');
+
+// ══ NACIONALIDADES ══
+const NACIONALIDADES = ["Afghan","Albanian","Algerian","American","Andorran","Angolan","Antiguan","Argentine","Armenian","Australian","Austrian","Azerbaijani","Bahamian","Bahraini","Bangladeshi","Barbadian","Belarusian","Belgian","Belizean","Beninese","Bhutanese","Bolivian","Bosnian","Botswanan","Brazilian","Bruneian","Bulgarian","Burkinabe","Burundian","Cambodian","Cameroonian","Canadian","Cape Verdean","Central African","Chadian","Chilean","Chinese","Colombian","Comoran","Congolese","Costa Rican","Croatian","Cuban","Cypriot","Czech","Danish","Djiboutian","Dominican","Dutch","East Timorese","Ecuadorean","Egyptian","Emirati","Equatorial Guinean","Eritrean","Estonian","Ethiopian","Fijian","Finnish","French","Gabonese","Gambian","Georgian","German","Ghanaian","Greek","Grenadian","Guatemalan","Guinean","Guinea-Bissauan","Guyanese","Haitian","Honduran","Hungarian","Icelandic","Indian","Indonesian","Iranian","Iraqi","Irish","Israeli","Italian","Ivorian","Jamaican","Japanese","Jordanian","Kazakhstani","Kenyan","Kiribati","Kuwaiti","Kyrgyz","Laotian","Latvian","Lebanese","Lesothan","Liberian","Libyan","Liechtensteiner","Lithuanian","Luxembourger","Macedonian","Malagasy","Malawian","Malaysian","Maldivian","Malian","Maltese","Marshallese","Mauritanian","Mauritian","Mexican","Micronesian","Moldovan","Monacan","Mongolian","Montenegrin","Moroccan","Mozambican","Namibian","Nauruan","Nepalese","New Zealander","Nicaraguan","Nigerian","Nigerien","North Korean","Norwegian","Omani","Pakistani","Palauan","Palestinian","Panamanian","Papua New Guinean","Paraguayan","Peruvian","Philippine","Polish","Portuguese","Qatari","Romanian","Russian","Rwandan","Saint Lucian","Salvadorean","Samoan","San Marinese","Sao Tomean","Saudi Arabian","Senegalese","Serbian","Seychellois","Sierra Leonean","Singaporean","Slovak","Slovenian","Solomon Islander","Somali","South African","South Korean","South Sudanese","Spanish","Sri Lankan","Sudanese","Surinamese","Swazi","Swedish","Swiss","Syrian","Taiwanese","Tajik","Tanzanian","Thai","Togolese","Tongan","Trinidadian","Tunisian","Turkish","Turkmen","Tuvaluan","Ugandan","Ukrainian","Uruguayan","Uzbekistani","Vanuatuan","Venezuelan","Vietnamese","Yemeni","Zambian","Zimbabwean"];
+
+function filtrarNac(input, dropId){
+  const q = input.value.trim().toLowerCase();
+  const drop = document.getElementById(dropId);
+  const filtradas = q.length === 0 ? NACIONALIDADES : NACIONALIDADES.filter(n => n.toLowerCase().startsWith(q));
+  if(filtradas.length === 0){ drop.classList.remove('open'); return; }
+  drop.innerHTML = filtradas.slice(0,30).map(n =>
+    '<div class="nac-item" onmousedown="selNac(\''+input.id+'\',\''+dropId+'\',\''+n+'\')">'+n+'</div>'
+  ).join('');
+  drop.classList.add('open');
+}
+function selNac(inputId, dropId, val){
+  document.getElementById(inputId).value = val;
+  cerrarDrop(dropId);
+}
+function cerrarDrop(dropId){
+  setTimeout(() => { const d = document.getElementById(dropId); if(d) d.classList.remove('open'); }, 150);
+}
+
+// ══ INIT ══
+(function(){
+  if(modo === 'propietario'){
+    document.getElementById('pantalla-huesped').style.display = 'none';
+    document.getElementById('pantalla-propietario').style.display = 'block';
+    document.getElementById('modo-aviso').textContent = '🔑 Modo propietario / Host mode';
+    const hoy = new Date();
+    const man = new Date(); man.setDate(man.getDate()+1);
+    document.getElementById('gen_entrada').value = hoy.toISOString().slice(0,10);
+    document.getElementById('gen_salida').value = man.toISOString().slice(0,10);
+  } else {
+    if(params.get('entrada')) setVal('fecha_entrada', params.get('entrada'));
+    if(params.get('salida'))  setVal('fecha_salida',  params.get('salida'));
+    if(params.get('pago'))    setVal('metodo_pago',   decodeURIComponent(params.get('pago')));
+    document.getElementById('firma_fecha').value = new Date().toISOString().slice(0,10);
+  }
+})();
+
+function setVal(id, val){ const el = document.getElementById(id); if(el) el.value = val; }
+function v(id){ const el = document.getElementById(id); return el ? el.value.trim() : ''; }
+function fmtFecha(iso){ if(!iso||!iso.includes('-')) return iso||'—'; const [y,m,d] = iso.split('-'); return d+'/'+m+'/'+y; }
+
+// ══ GENERAR ENLACE ══
+function generarEnlace(){
+  const entrada = v('gen_entrada'), salida = v('gen_salida'), pago = v('gen_pago');
+  if(!entrada||!salida||!pago){ toast('⚠️ Rellena fechas y método de pago', 'r'); return; }
+  if(salida <= entrada){ toast('⚠️ La salida debe ser posterior a la entrada', 'r'); return; }
+  const enlace = BASE_URL+'?entrada='+entrada+'&salida='+salida+'&pago='+encodeURIComponent(pago);
+  document.getElementById('enlace-texto').textContent = enlace;
+  document.getElementById('enlace-resultado').style.display = 'block';
+  window._enlaceGenerado = enlace;
+  window._genEntrada = entrada; window._genSalida = salida;
+}
+function copiarEnlace(){
+  const enlace = window._enlaceGenerado; if(!enlace) return;
+  if(navigator.clipboard&&navigator.clipboard.writeText){
+    navigator.clipboard.writeText(enlace).then(()=>toast('✅ Enlace copiado','v')).catch(()=>fallbackCopy(enlace));
+  } else fallbackCopy(enlace);
+}
+function abrirWAConEnlace(){
+  const enlace = window._enlaceGenerado; if(!enlace) return;
+  const msg = 'Hola, para completar el registro legal de viajeros de tu estancia en Club Del Mar (entrada '+fmtFecha(window._genEntrada)+', salida '+fmtFecha(window._genSalida)+') por favor rellena este formulario:\n\n'+enlace+'\n\nSolo tienes que rellenar tus datos y pulsar el botón verde. Gracias 🙏\n\nHi, to complete the legal guest registration for your stay at Club Del Mar (check-in '+fmtFecha(window._genEntrada)+', check-out '+fmtFecha(window._genSalida)+') please fill in this form:\n\n'+enlace+'\n\nJust fill in your details and tap the green button. Thank you 🙏';
+  window.open('https://wa.me/?text='+encodeURIComponent(msg),'_blank');
+}
+function fallbackCopy(txt){
+  const ta=document.createElement('textarea');ta.value=txt;ta.style.cssText='position:fixed;top:-9999px;left:-9999px';
+  document.body.appendChild(ta);ta.select();
+  try{document.execCommand('copy');toast('✅ Enlace copiado','v');}catch(e){toast('Copia manualmente','r');}
+  document.body.removeChild(ta);
+}
+
+// ══ CARGAR JSON PEGADO ══
+function cargarJSONTexto(){
+  const texto = document.getElementById("json-paste").value.trim();
+  if(!texto){ toast("⚠️ Pega el JSON primero","r"); return; }
+  const inicio = texto.indexOf("{");
+  const fin = texto.lastIndexOf("}");
+  if(inicio === -1 || fin === -1){ toast("⚠️ No se encontró JSON válido","r"); return; }
+  try{
+    const data = JSON.parse(texto.slice(inicio, fin+1));
+    window._jsonCargado = data;
+    mostrarVisor(data);
+    toast("✅ Datos cargados correctamente","v");
+  } catch(e){ toast("⚠️ JSON inválido — revisa el texto pegado","r"); }
+}
+
+function cargarFicheroJSON(event){
+  const file = event.target.files[0];
+  if(!file) return;
+  const reader = new FileReader();
+  reader.onload = function(e){
+    try{
+      const data = JSON.parse(e.target.result);
+      window._jsonCargado = data;
+      mostrarVisor(data);
+      toast('✅ Fichero cargado correctamente','v');
+    } catch(err){ toast('⚠️ Fichero JSON inválido','r'); }
+  };
+  reader.readAsText(file);
+}
+
+function descargarJSON(){
+  const data = window._jsonCargado;
+  if(!data){ toast("⚠️ No hay datos cargados","r"); return; }
+  const v1 = data.viajero_1 || {};
+  const a  = data.alojamiento || {};
+  const apellido = (v1.apellido_1||"desconocido").replace(/s+/g,"_").toLowerCase();
+  const nombre   = (v1.nombre||"guest").replace(/s+/g,"_").toLowerCase();
+  const entrada  = (a.fecha_entrada||"sin-fecha").replace(/-/g,"");
+  const filename = apellido + "_" + nombre + "_" + entrada + ".json";
+  const blob = new Blob([JSON.stringify(data, null, 2)], {type:"application/json"});
+  const url  = URL.createObjectURL(blob);
+  const a2   = document.createElement("a");
+  a2.href = url; a2.download = filename;
+  document.body.appendChild(a2); a2.click();
+  document.body.removeChild(a2);
+  URL.revokeObjectURL(url);
+  toast("✅ Descargado: " + filename, "v");
+}
+
+function mostrarVisor(d){
+  const a=d.alojamiento||{},v1=d.viajero_1||{},v2=d.viajero_2||{},m=d.menor||{},dec=d.declaracion||{};
+  function fila(label,val){ return val?'<div class="f"><label>'+label+'</label><input readonly tabindex="-1" value="'+esc(val)+'"></div>':''; }
+  function esc(s){ return String(s).replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;'); }
+  function ff(iso){ return iso&&iso.includes('-')?fmtFecha(iso):iso||''; }
+
+  let html='<div class="seccion"><div class="sec-head azul"><span class="num">A</span> Alojamiento / Accommodation</div><div class="sec-body">';
+  html+='<div class="g2">'+fila('Método de pago / Payment',a.metodo_pago)+fila('NRA',a.nra)+'</div>';
+  html+='<div class="g2">'+fila('Entrada / Check-in',ff(a.fecha_entrada))+fila('Salida / Check-out',ff(a.fecha_salida))+'</div>';
+  html+='</div></div>';
+
+  html+='<div class="seccion"><div class="sec-head verde"><span class="num">B</span> Viajero 1 — Titular / Main guest</div><div class="sec-body">';
+  html+='<div class="g3">'+fila('Nombre / Name',v1.nombre)+fila('Apellido 1 / Last name',v1.apellido_1)+fila('Apellido 2 / 2nd last name',v1.apellido_2)+'</div>';
+  html+='<div class="g3">'+fila('F. nac. / DOB',ff(v1.fecha_nacimiento))+fila('Nacionalidad / Nationality',v1.nacionalidad)+fila('Tipo doc. / Doc. type',v1.tipo_documento)+'</div>';
+  html+='<div class="g2">'+fila('Nº documento / Doc. no.',v1.num_documento)+fila('Nº soporte / Support no.',v1.num_soporte)+'</div>';
+  html+=fila('Dirección / Address',v1.direccion);
+  html+='<div class="g3">'+fila('Municipio / City',v1.municipio)+fila('País / Country',v1.provincia_pais)+fila('Móvil / Mobile',v1.movil)+'</div>';
+  html+='<div class="g2">'+fila('Email',v1.email)+fila('Fijo / Landline',v1.fijo)+'</div>';
+  html+='</div></div>';
+
+  if(v2&&v2.nombre){
+    html+='<div class="seccion"><div class="sec-head verde"><span class="num">B</span> Viajero 2 / Guest 2</div><div class="sec-body">';
+    html+='<div class="g3">'+fila('Nombre / Name',v2.nombre)+fila('Apellido 1 / Last name',v2.apellido_1)+fila('Apellido 2 / 2nd last name',v2.apellido_2)+'</div>';
+    html+='<div class="g3">'+fila('F. nac. / DOB',ff(v2.fecha_nacimiento))+fila('Nacionalidad / Nationality',v2.nacionalidad)+fila('Tipo doc. / Doc. type',v2.tipo_documento)+'</div>';
+    html+='<div class="g2">'+fila('Nº documento / Doc. no.',v2.num_documento)+fila('Nº soporte / Support no.',v2.num_soporte)+'</div>';
+    html+=fila('Dirección / Address',v2.direccion);
+    html+='<div class="g3">'+fila('Municipio / City',v2.municipio)+fila('País / Country',v2.provincia_pais||v2.pais)+fila('Contacto / Contact',v2.contacto)+'</div>';
+    html+='</div></div>';
+  }
+
+  if(m&&m.nombre){
+    html+='<div class="seccion"><div class="sec-head gris"><span class="num">C</span> Menor / Minor</div><div class="sec-body">';
+    html+='<div class="g3">'+fila('Nombre / Name',m.nombre)+fila('F. nac. / DOB',ff(m.fecha_nacimiento))+fila('Parentesco / Relationship',m.parentesco)+'</div>';
+    html+='</div></div>';
+  }
+
+  html+='<div class="seccion"><div class="sec-head azul"><span class="num">D</span> Declaración / Declaration</div><div class="sec-body">';
+  html+='<div class="g2">'+fila('Lugar / Place',dec.lugar)+fila('Fecha / Date',ff(dec.fecha))+'</div>';
+  html+=fila('Declarante / Declarant',dec.declarante);
+  html+='<div style="margin-top:.5rem;font-size:.73rem;color:'+(dec.aceptado?'#065F46':'#DC2626')+';font-weight:600">'+(dec.aceptado?'✅ Declaración aceptada / Declaration accepted':'⚠️ NO aceptada / NOT accepted')+'</div>';
+  html+='</div></div>';
+
+  const visorEl=document.getElementById('visor-formulario');
+  visorEl.innerHTML='<div class="visor-banner on">✅ Datos del huésped cargados — Solo lectura / Read only</div>'+html;
+  visorEl.style.display='block';
+  visorEl.scrollIntoView({behavior:'smooth',block:'start'});
+}
+
+function limpiarVisor(){
+  document.getElementById('visor-formulario').style.display='none';
+  document.getElementById('visor-formulario').innerHTML='';
+  document.getElementById('json-paste').value='';
+  document.getElementById('enlace-resultado').style.display='none';
+  window._enlaceGenerado=null;
+  toast('Limpiado / Cleared','v');
+}
+
+// ══ ENVIAR POR WHATSAPP (huésped) ══
+function enviarWhatsApp(){
+  const reqAloj=['metodo_pago','fecha_entrada','fecha_salida'];
+  const vaciAloj=reqAloj.find(id=>!v(id));
+  if(vaciAloj){toast('⚠️ Faltan datos del alojamiento / Missing accommodation data','r');return;}
+  const reqTit=['t_nombre','t_ap1','t_fnac','t_nac','t_tdoc','t_ndoc','t_soporte','t_dir','t_pais','t_movil','t_email','firma_lugar','firma_nombre'];
+  const vaciTit=reqTit.find(id=>!v(id));
+  if(vaciTit){toast('⚠️ Rellena todos los campos obligatorios / Fill all required fields','r');document.getElementById(vaciTit).focus();return;}
+  if(!document.getElementById('acepto').checked){toast('⚠️ Debes aceptar la declaración / Please accept the declaration','r');return;}
+
+  const data={
+    alojamiento:{nombre:'Club Del Mar',nra:'VT-447908-A',direccion:'Avd. Benidorm, 18',metodo_pago:v('metodo_pago'),fecha_entrada:v('fecha_entrada'),fecha_salida:v('fecha_salida')},
+    viajero_1:{nombre:v('t_nombre'),apellido_1:v('t_ap1'),apellido_2:v('t_ap2'),fecha_nacimiento:v('t_fnac'),nacionalidad:v('t_nac'),tipo_documento:v('t_tdoc'),num_documento:v('t_ndoc'),num_soporte:v('t_soporte'),direccion:v('t_dir'),municipio:v('t_municipio'),provincia_pais:v('t_pais'),movil:v('t_movil'),email:v('t_email'),fijo:v('t_fijo')},
+    viajero_2:{nombre:v('v2_nombre'),apellido_1:v('v2_ap1'),apellido_2:v('v2_ap2'),fecha_nacimiento:v('v2_fnac'),nacionalidad:v('v2_nac'),tipo_documento:v('v2_tdoc'),num_documento:v('v2_ndoc'),num_soporte:v('v2_soporte'),direccion:v('v2_dir'),municipio:v('v2_municipio'),provincia_pais:v('v2_pais'),contacto:v('v2_contacto')},
+    menor:{nombre:v('m1_nom'),fecha_nacimiento:v('m1_fnac'),parentesco:v('m1_par')},
+    declaracion:{lugar:v('firma_lugar'),fecha:v('firma_fecha'),declarante:v('firma_nombre'),aceptado:document.getElementById('acepto').checked},
+    meta:{generado:new Date().toISOString(),version:'1.0'}
+  };
+
+  const jsonStr=JSON.stringify(data);
+  const msg='📋 REGISTRO VIAJEROS — Club Del Mar\nEntrada: '+fmtFecha(v('fecha_entrada'))+' · Salida: '+fmtFecha(v('fecha_salida'))+'\nTitular: '+v('t_nombre')+' '+v('t_ap1')+'\n\nJSON:\n'+jsonStr;
+  window.open('https://wa.me/'+WA_NUM+'?text='+encodeURIComponent(msg),'_blank');
+  toast('✅ Abriendo WhatsApp…','v');
+}
+
+// ══ TOAST ══
+function toast(msg,tipo){
+  const t=document.getElementById('toast');
+  t.textContent=msg;t.className='on'+(tipo?' '+tipo:'');
+  clearTimeout(t._t);t._t=setTimeout(()=>{t.className='';},2800);
+}
+</script>
+</body>
+</html>
